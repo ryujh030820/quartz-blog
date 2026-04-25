@@ -111,14 +111,11 @@ export const externalLinkRegex = /^https?:\/\//i
 
 export const arrowRegex = new RegExp(/(-{1,2}>|={1,2}>|<-{1,2}|<={1,2})/g)
 
-// !?                 -> optional embedding
-// \[\[               -> open brace
-// ([^\[\]\|\#]+)     -> one or more non-special characters ([,],|, or #) (name)
-// (#[^\[\]\|\#]+)?   -> # then one or more non-special characters (heading link)
-// (\\?\|[^\[\]\#]+)? -> optional escape \ then | then zero or more non-special characters (alias)
-export const wikilinkRegex = new RegExp(
-  /!?\[\[([^\[\]\|\#\\]+)?(#+[^\[\]\|\#\\]+)?(\\?\|[^\[\]\#]*)?\]\]/g,
-)
+// !?         -> optional embedding
+// \[\[       -> open braces
+// [^\n]*?    -> lazily match link body on the same line (allows [ and ] in filenames)
+// \]\]       -> closing braces
+export const wikilinkRegex = new RegExp(/!?\[\[[^\n]*?\]\]/g)
 
 // ^\|([^\n])+\|\n(\|) -> matches the header row
 // ( ?:?-{3,}:? ?\|)+  -> matches the header row separator
@@ -126,7 +123,44 @@ export const wikilinkRegex = new RegExp(
 export const tableRegex = new RegExp(/^\|([^\n])+\|\n(\|)( ?:?-{3,}:? ?\|)+\n(\|([^\n])+\|\n?)+/gm)
 
 // matches any wikilink, only used for escaping wikilinks inside tables
-export const tableWikilinkRegex = new RegExp(/(!?\[\[[^\]]*?\]\]|\[\^[^\]]*?\])/g)
+export const tableWikilinkRegex = new RegExp(/(!?\[\[[^\n]*?\]\]|\[\^[^\]]*?\])/g)
+
+function splitOnFirstUnescaped(input: string, delimiter: string): [string, string | undefined] {
+  let escaped = false
+  for (let i = 0; i < input.length; i++) {
+    const char = input[i]
+
+    if (escaped) {
+      escaped = false
+      continue
+    }
+
+    if (char === "\\") {
+      escaped = true
+      continue
+    }
+
+    if (char === delimiter) {
+      return [input.slice(0, i), input.slice(i + 1)]
+    }
+  }
+
+  return [input, undefined]
+}
+
+function parseWikilink(value: string) {
+  const body = value.replace(/^!?\[\[/, "").replace(/\]\]$/, "")
+  const [targetWithAnchor, alias] = splitOnFirstUnescaped(body, "|")
+  const [fp, anchorBody] = splitOnFirstUnescaped(targetWithAnchor, "#")
+  const anchor = anchorBody === undefined ? "" : `#${anchorBody}`
+
+  return {
+    embed: value.startsWith("!"),
+    fp,
+    anchor,
+    alias,
+  }
+}
 
 const highlightRegex = new RegExp(/==([^=]+)==/g)
 const commentRegex = new RegExp(/%%[\s\S]*?%%/g)
@@ -189,17 +223,21 @@ export const ObsidianFlavoredMarkdown: QuartzTransformerPlugin<Partial<Options>>
         })
 
         // replace all other wikilinks
-        src = src.replace(wikilinkRegex, (value, ...capture) => {
-          const [rawFp, rawHeader, rawAlias]: (string | undefined)[] = capture
-
-          const [fp, anchor] = splitAnchor(`${rawFp ?? ""}${rawHeader ?? ""}`)
-          const blockRef = Boolean(rawHeader?.startsWith("#^")) ? "^" : ""
+        src = src.replace(wikilinkRegex, (value) => {
+          const parsed = parseWikilink(value)
+          const [fp, anchor] = splitAnchor(`${parsed.fp}${parsed.anchor}`)
+          const blockRef = Boolean(parsed.anchor.startsWith("#^")) ? "^" : ""
           const displayAnchor = anchor ? `#${blockRef}${anchor.trim().replace(/^#+/, "")}` : ""
-          const displayAlias = rawAlias ?? rawHeader?.replace("#", "|") ?? ""
-          const embedDisplay = value.startsWith("!") ? "!" : ""
+          const displayAlias =
+            parsed.alias !== undefined
+              ? `|${parsed.alias}`
+              : parsed.anchor
+                ? parsed.anchor.replace("#", "|")
+                : ""
+          const embedDisplay = parsed.embed ? "!" : ""
 
-          if (rawFp?.match(externalLinkRegex)) {
-            return `${embedDisplay}[${displayAlias.replace(/^\|/, "")}](${rawFp})`
+          if (parsed.fp.match(externalLinkRegex)) {
+            return `${embedDisplay}[${displayAlias.replace(/^\|/, "")}](${parsed.fp})`
           }
 
           return `${embedDisplay}[[${fp}${displayAnchor}${displayAlias}]]`
@@ -220,11 +258,11 @@ export const ObsidianFlavoredMarkdown: QuartzTransformerPlugin<Partial<Options>>
           if (opts.wikilinks) {
             replacements.push([
               wikilinkRegex,
-              (value: string, ...capture: string[]) => {
-                let [rawFp, rawHeader, rawAlias] = capture
-                const fp = rawFp?.trim() ?? ""
-                const anchor = rawHeader?.trim() ?? ""
-                const alias: string | undefined = rawAlias?.slice(1).trim()
+              (value: string) => {
+                const parsed = parseWikilink(value)
+                const fp = parsed.fp.trim()
+                const anchor = parsed.anchor.trim()
+                const alias: string | undefined = parsed.alias?.trim()
 
                 // embed cases
                 if (value.startsWith("!")) {
