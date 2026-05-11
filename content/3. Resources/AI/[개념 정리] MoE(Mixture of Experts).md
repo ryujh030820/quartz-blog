@@ -107,3 +107,5 @@ $$L_z = \beta \cdot \frac{1}{B} \sum_{x} \left(\log \sum_i \exp(x_i)\right)^2$$
 이는 게이팅과 같은 지수 함수에 있어서 매우 중요한 요소이다.
 ## References
 - https://huggingface.co/blog/moe
+## Backlinks
+- [[[논문 리뷰] Attention Is All You Need]]

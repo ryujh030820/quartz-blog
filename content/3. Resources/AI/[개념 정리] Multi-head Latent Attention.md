@@ -21,7 +21,7 @@ $$
 이 개념은 새로운 것이 아니다. LoRA 방식은 대규모 트랜스포머 모델을 세밀하게 조정하는 데 자주 사용되는 기법이다.
 또한, 프로젝션 매트릭스를 근사화함으로써 모델의 기능을 향상시키는 데에도 이러한 방법이 활용된다.
 ## Multi-head Latent Attention(MLA)
-[[[[논문 리뷰] Grouped Query Attention|GQA|]]와 마찬가지로, Multi-head Latent Attention(MLA)도 key와 value의 정보만을 처리한다.
+GQA와 마찬가지로, Multi-head Latent Attention(MLA)도 key와 value의 정보만을 처리한다.
 하지만 GQA와 달리, MLA는 여러 query에 걸쳐 key와 value의 정보를 공유하지 않는다.
 대신, MLA는 multi-head attention과 동일한 방식으로 작동한다.
 
@@ -70,3 +70,6 @@ cross-attention에서도 마찬가지로, key와 value의 입력 시퀀스는 �
 ## References
 - https://arxiv.org/pdf/2405.04434
 - https://machinelearningmastery.com/a-gentle-introduction-to-multi-head-latent-attention-mla/
+## Backlinks
+- [[[논문 리뷰] Grouped Query Attention]]
+- [[[논문 리뷰] Attention Is All You Need]]

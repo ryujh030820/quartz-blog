@@ -75,3 +75,5 @@ backward pass에서 softmax를 재계산할 때 $L^{(j)}$ 하나만 있으면 �
 ## References
 - https://arxiv.org/pdf/2205.14135
 - https://jinwoongkim.net/papers/FlashAttention-key-ideas/
+## Backlinks
+- [[[논문 리뷰] Attention Is All You Need]]

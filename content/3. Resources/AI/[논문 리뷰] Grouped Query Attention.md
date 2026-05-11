@@ -41,3 +41,5 @@ GQA를 사용하면 모델 크기가 증가함에 따라 대역폭 및 용량이
 GQA는 인코더 셀프 어텐션 레이어에는 적용되지 않는다. 인코더 표현은 병렬로 계산되며, 따라서 메모리 대역폭은 일반적으로 주요 병목 현상이 아니다.
 ## References
 - https://arxiv.org/pdf/2305.13245
+## Backlinks
+- [[[논문 리뷰] Attention Is All You Need]]

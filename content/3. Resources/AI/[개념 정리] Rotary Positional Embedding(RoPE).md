@@ -7,7 +7,7 @@ tags:
   - Concept
 ---
 ## RoPE: 트랜스포머 포지셔널 인코딩의 사실상 표준
-[[[논문 리뷰] Attention Is All You Need|트랜스포머]]가 처음 등장한 이후, 수많은 포지셔널 인코딩 알고리즘이 제안되었다.
+트랜스포머가 처음 등장한 이후, 수많은 포지셔널 인코딩 알고리즘이 제안되었다.
 이들 중 현재 가장 널리 사용되며 사실상의 표준으로 자리 잡은 방식이 바로 **Rotary Positional Embedding(RoPE)** 이다.
 ![[Pasted image 20260405160250.png|400]]
 RoPE의 개념은 Zhipu AI에서 발표한 논문, [ROformer: Enhanced Transformer with Rotary Position Embedding](https://arxiv.org/pdf/2104.09864)에서 처음 등장했다.
@@ -80,3 +80,5 @@ RoPE에서 새롭게 제안된 방법은 임베딩 자체를 수정하지 않고
 - https://medium.com/@hugmanskj/mastering-llama-rotary-positional-embedding-rope-%EC%9D%B4%ED%95%B4%ED%95%98%EA%B8%B0-9b1963a22852
 - https://arxiv.org/pdf/2104.09864
 - https://blog.naver.com/wowhd93/222237205511?viewType=pc
+## Backlinks
+- [[[논문 리뷰] Attention Is All You Need]]
