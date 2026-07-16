@@ -329,3 +329,5 @@ DP 아이템에 조부모 인덱스 $g$ 추가. 복잡도: $O(n^4)$
 | Graph-based (non-proj.)  | Chu-Liu-Edmonds       | $O(n^2)$ | non-projective 처리 가능 |
 | Neural transition        | Chen & Manning        | $O(n)$   | 빠르고 정확               |
 | Neural graph             | Dozat & Manning       | $O(n^2)$ | 가장 높은 정확도            |
+## Backlinks
+- [[[개념 정리] Beam Search]]

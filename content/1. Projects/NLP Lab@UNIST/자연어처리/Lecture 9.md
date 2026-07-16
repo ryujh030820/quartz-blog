@@ -222,3 +222,5 @@ GPT를 더 키운 버전(15억 파라미터), 더 많은 데이터로 학습 →
 | ICL 습득 방식                    | Autoregressive pretraining 과정에서 **자연스럽게** 체득 — 데모를 이어붙이고 계속 생성하게 하면 됨 | 이 메커니즘을 염두에 두고 pretrain되지 않아 **세심한 prompt 설계**가 필요                                 |
 | Autoregressive demo matching | "예시 암기 + 패턴 연장"이 태생적으로 내장                                             | 프롬프트 형식을 "그대로 따라 하는" 경향이 약함 — instruction tuning이나 few-shot finetuning으로 별도 학습해야 함 |
 즉 encoder-decoder 구조 자체의 표현력 문제라기보다, **pretraining objective와 구조가 few-shot/in-context 방식의 사용 패턴과 자연스럽게 맞물리는가**의 문제이며, 이 부분에서 decoder-only 구조가 현재 우위를 점하고 있음.
+## Backlinks
+- [[[논문 리뷰] Attention Is All You Need]]
